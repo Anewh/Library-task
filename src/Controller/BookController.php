@@ -54,21 +54,21 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $coverFile = $form->get('cover')->getData();
+            $posterFile = $form->get('poster')->getData();
             $bookFile = $form->get('file')->getData();
-            if ($coverFile && $bookFile) {
-                $cover_originalFilename = pathinfo($coverFile->getClientOriginalName(), PATHINFO_FILENAME);
+            if ($posterFile && $bookFile) {
+                $poster_originalFilename = pathinfo($posterFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $originalFilename = pathinfo($bookFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $cover_safeFilename = $slugger->slug($cover_originalFilename);
+                $poster_safeFilename = $slugger->slug($poster_originalFilename);
                 $safeFilename = $slugger->slug($originalFilename);
-                $cover_newFilename = $cover_safeFilename . '-' . uniqid() . '.' . $coverFile->guessExtension();
+                $poster_newFilename = $poster_safeFilename . '-' . uniqid() . '.' . $posterFile->guessExtension();
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $bookFile->guessExtension();
 
                 try {
-                    // var_dump($cover_newFilename);
-                    $coverFile->move(
+                    // var_dump($poster_newFilename);
+                    $posterFile->move(
                         $this->getParameter('img_directory'), //сохранение обложки на сервере
-                        $cover_newFilename
+                        $poster_newFilename
                     );
                     $bookFile->move(
                         $this->getParameter('file_directory'), //сохранение файла книги на сервере
@@ -79,7 +79,7 @@ class BookController extends AbstractController
                 }
                 $book->setAuthor($form->get('author')->getData());
                 $book->setUserId($user);
-                $book->setPoster('\\resources\\img\\' . $cover_newFilename);
+                $book->setPoster('\\resources\\img\\' . $poster_newFilename);
                 $book->setFile('\\resources\\files\\' . $newFilename);
                 $bookRepository->add($book, true); //добавление записи
             }

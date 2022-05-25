@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -13,19 +14,22 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <header>
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <ul class="col-12 col-md-auto mb-2 justify-content-center mb-md-0" style="list-style: none;">
-            <li><a href="/">{{user.email}}</a></li>
-            <li><a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_user_show', {'id': user.id}) }}">Profile</a></li>
-            <li><a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_book_index') }}">Books</a></li>
-            <li><a href="{{ path('app_logout') }}" class="nav-link px-2 link-secondary h5">Выход</a></li>
-            </ul>
-            {% else %}
-            <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_login') }}">Login</a>
-            <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_register') }}">Register</a>
-            {% endif %}
-    </header>
+    <div class="container sticky-lg-top bg-gradient bg-black">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
+            <div>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <ul class="col-12 col-md-auto mb-2 justify-content-center mb-md-0" style="list-style: none;">
+                        <li><a href="/">{{app.user.email}}</a></li>
+                        <li><a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_user_show', {'id': app.user.id}) }}">Profile</a></li>
+                        <li><a href="{{ path('app_logout') }}" class="nav-link px-2 link-secondary h5">Выход</a></li>
+                    </ul>
+                {% else %}
+                    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_login') }}">Login</a>
+                    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="{{ path('app_register') }}">Register</a>
+                {% endif %}
+            </div>
+        </header>
+    </div>
     <body>
         {% block body %}{% endblock %}
     </body>

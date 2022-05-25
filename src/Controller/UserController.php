@@ -55,9 +55,9 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userRepository->add($user, true);
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            //$userRepository->add($user, true);
+            $user->setPassword(password_hash($form->get('password')->getData(), PASSWORD_DEFAULT));
+            return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/edit.html.twig', [

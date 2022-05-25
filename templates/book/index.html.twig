@@ -4,49 +4,33 @@
 
 {% block body %}
     <h1>Book index</h1>
-
-    {# <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Author</th>
-                <th>Poster</th>
-                <th>File</th>
-                <th>Last_read_date</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for book in books %}
-            <tr>
-                <td>{{ book.Name }}</td>
-                <td>{{ book.Author }}</td>
-                <td>{{ book.poster }}</td>
-                <td>{{ book.file }}</td>
-                <td>{{ book.lastReadDate ? book.lastReadDate|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_book_show', {'id': book.id}) }}">show</a>
-                    <a href="{{ path('app_book_edit', {'id': book.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table> #}
-
-    {% for book in books %}
-    <div class="col-md-5 p-lg-2 mx-auto">
-        <a href="{{ path('app_book_show', {'id': book.id}) }}" style='margin: 20px;'>
-            <img src="{{ book.poster}}" style='height: 200px;'>
-        </a>
-        <p>{{ book.name }}</p>
-    </div>
-    {% else %}
-    <p colspan="5">No books, only ace, take care <code> <3 </code></p>
-    {% endfor %}
+        <div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light">
+            <div class="row">
+            {% if is_granted("ROLE_USER") %}
+                {% for book in app.user.books %}
+                    <div class="col-md-5 p-lg-2 mx-auto">
+                        <a href="{{ path('app_book_show', {'id': book.id}) }}" style='margin: 20px;'>
+                            <img src="{{ book.poster}}" style='height: 200px;'>
+                        </a>
+                        <p>{{ book.name }}</p>
+                    </div>
+                {% else %}
+                    <p colspan="5">No books, take care T_T <code> </3 </code></p>
+                {% endfor %}
+            {% else %}
+                {% for book in books %}
+                    <div class="col-md-5 p-lg-2 mx-auto">
+                        <a href="{{ path('app_book_show', {'id': book.id}) }}" style='margin: 20px;'>
+                            <img src="{{ book.poster}}" style='height: 200px;'>
+                        </a>
+                        <p>{{ book.name }}</p>
+                    </div>
+                {% else %}
+                    <p colspan="5">No books, take care T_T <code> </3 </code></p>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
 
     <a href="{{ path('app_book_new') }}">Create new</a>
 {% endblock %}
