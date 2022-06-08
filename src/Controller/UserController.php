@@ -5,41 +5,18 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
-    {
-        return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userRepository->add($user, true);
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
-
+    // Отображение данных о пользователе
+    // Входные данные
+    // user - пользователь
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
@@ -48,15 +25,29 @@ class UserController extends AbstractController
         ]);
     }
 
+    // Изменение пароля пользователя
+    // Входные данные
+    // user - пользователь
+    // request - для получения данных о вошедшем пользователе
+    // userRepository - см документацию Symfony
+    // UserPasswordHasherInterface - для хеширования пароля в случае, если тот был изменен
+    // Выходные данные
+    // редирект на страницу со списоком всех книг
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserRepository $userRepository): Response
+    public function edit(Request $request, User $user, UserRepository $userRepository,  UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //$userRepository->add($user, true);
-            $user->setPassword(password_hash($form->get('password')->getData(), PASSWORD_DEFAULT));
+            // хеширование пароля
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+            $userRepository->add($user, true);
             return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,6 +57,11 @@ class UserController extends AbstractController
         ]);
     }
 
+    // Удаление пользователя
+    // Входные данные
+    // user - пользователь
+    // request - для получения данных о вошедшем пользователе
+    // userRepository - см документацию Symfony
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, UserRepository $userRepository): Response
     {
@@ -73,6 +69,6 @@ class UserController extends AbstractController
             $userRepository->remove($user, true);
         }
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
     }
 }

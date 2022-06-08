@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Edit Book{% endblock %}
-
 {% block body %}
-    <h1>Edit Book</h1>
-
-    {{ include('book/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_book_index') }}">back to list</a>
-
-    {{ include('book/_delete_form.html.twig') }}
+    <h1>Редактировать информацию о книге</h1>
+    <div class="input-group mb-3" style="margin: 0 0 0 5%;">
+        {{ include('book/_form.html.twig', {'button_label': 'Сохранить изменения'}) }}
+    </div>
+    <div class="input-group mb-3" style="margin: 0 0 0 5%;">
+        <a href="{{ path('app_book_index') }}" class="btn btn-primary">Вернуться к списку книг</a>
+    </div>
+    <div class="input-group mb-3" style="margin: 0 0 0 5%;">
+        {{ include('book/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

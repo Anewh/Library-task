@@ -108,6 +108,11 @@ class Book
 
         return $this;
     }
+
+    // public function getTitle()
+    // {
+    //     return $this->Name;
+    // }
     public function __toString(): string
     {
         return (string)$this->name;

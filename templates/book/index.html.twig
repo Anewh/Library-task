@@ -1,36 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Book index{% endblock %}
+{% block title %}Books{% endblock %}
 
 {% block body %}
-    <h1>Book index</h1>
         <div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light">
             <div class="row">
             {% if is_granted("ROLE_USER") %}
+            <h2 class="basic-example" style='margin-right: 150px;' >Мои книги</h2>
+            <a href="{{ path('app_book_new') }}" >Create new</a>
                 {% for book in app.user.books %}
-                    <div class="col-md-5 p-lg-2 mx-auto">
+                    <div class="card" style="width: 18rem;">
                         <a href="{{ path('app_book_show', {'id': book.id}) }}" style='margin: 20px;'>
                             <img src="{{ book.poster}}" style='height: 200px;'>
                         </a>
-                        <p>{{ book.name }}</p>
+                            <h5 class="card-title"><p>{{ book.name }}</p></h5>
+                            <p class="card-text">{{ book.Author }}</p>
                     </div>
                 {% else %}
                     <p colspan="5">No books, take care T_T <code> </3 </code></p>
                 {% endfor %}
             {% else %}
+            <h2 class="basic-example" style='margin-right: 150px;' >Книги на сайте</h2>
                 {% for book in books %}
-                    <div class="col-md-5 p-lg-2 mx-auto">
+                    <div class="card" style="width: 18rem;">
                         <a href="{{ path('app_book_show', {'id': book.id}) }}" style='margin: 20px;'>
                             <img src="{{ book.poster}}" style='height: 200px;'>
                         </a>
-                        <p>{{ book.name }}</p>
+                        <h5 class="card-title"><p>{{ book.name }}</p></h5>
+                        <p class="card-text">{{ book.Author }}</p>
                     </div>
                 {% else %}
-                    <p colspan="5">No books, take care T_T <code> </3 </code></p>
+                    <p colspan="5">Книг пока что нет | No books T_T <code> </3 </code></p>
                 {% endfor %}
             {% endif %}
             </div>
         </div>
-
-    <a href="{{ path('app_book_new') }}">Create new</a>
 {% endblock %}
